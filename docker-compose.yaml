@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: mydatabase
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+  app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      environment:
+        - MONGO_URI=mongodb://mongo:27017/mydatabase
+      volumes:
+        - .:/app   # Mount current directory to /app in container
+        - /app/tmp # Exclude the tmp folder to avoid overwriting binaries
+      depends_on:
+        - mongo
+      restart: unless-stopped
+
+volumes:
+  mongo_data:

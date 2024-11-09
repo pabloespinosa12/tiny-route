@@ -1,0 +1,22 @@
+# Use the official Golang image as the base image
+FROM golang:1.23 AS base
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@v1.61.1
+
+# Copy go.mod and go.sum files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Expose the application port
+EXPOSE 8080
+
+# Run air for hot reloading
+WORKDIR /app/cmd/tiny-route
+CMD ["air"]
