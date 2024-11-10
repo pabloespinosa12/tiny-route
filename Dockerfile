@@ -5,7 +5,10 @@ FROM golang:1.23 AS base
 WORKDIR /app
 
 # Install air for hot reloading
-RUN go install github.com/air-verse/air@v1.61.1
+#RUN go install github.com/air-verse/air@v1.61.1
+
+# Install CompileDaemon for hot reloading
+RUN go install github.com/githubnemo/CompileDaemon@latest
 
 # Copy go.mod and go.sum files and download dependencies
 COPY go.mod go.sum ./
@@ -20,5 +23,6 @@ COPY . .
 EXPOSE 8080
 
 # Run air for hot reloading
-WORKDIR /app/cmd/tiny-route
-CMD ["air"]
+#WORKDIR /app/cmd/tiny-route
+#CMD ["air"]
+CMD ["CompileDaemon", "-polling=true", "--build=go build -o main ./cmd/tiny-route/", "--command=./main"]
