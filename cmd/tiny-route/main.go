@@ -17,5 +17,6 @@ func main() {
 	r.Use(middleware.DatabaseProvider(database))
 	r.GET("/:id", controller.GetUrl)
 	r.POST("/", controller.CreateUrl)
+	r.GET("/user/:id", controller.GetUserById)
 	r.Run()
 }
