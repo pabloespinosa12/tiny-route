@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pabloespinosa12/tiny-route/api/middleware"
 )
 
 type urlPostData struct {
@@ -11,8 +12,11 @@ type urlPostData struct {
 }
 
 func GetUrl(c *gin.Context) {
+	db := middleware.GetDatabaseFromContext(c)
 	id := c.Param("id")
+
 	// Perform Select call to the database
+	db.PingTest() // Avoid unused variable error
 
 	found := true
 	if found {
@@ -25,7 +29,10 @@ func GetUrl(c *gin.Context) {
 }
 
 func CreateUrl(c *gin.Context) {
+	db := middleware.GetDatabaseFromContext(c)
 	data := urlPostData{}
+
+	db.PingTest() // Avoid unused variable error
 
 	if err := c.ShouldBind(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

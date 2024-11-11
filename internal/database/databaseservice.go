@@ -18,10 +18,16 @@ type DatabaseService struct {
 func NewDatabaseService(connectionString string, database string) *DatabaseService {
 	client := createMongoClient(connectionString)
 
-	return &DatabaseService{
+	dbService := &DatabaseService{
 		client:   client,
 		database: database,
 	}
+
+	if !dbService.PingTest() {
+		panic(fmt.Sprintf("Ping to database failed"))
+	}
+
+	return dbService
 }
 
 func createMongoClient(connectionString string) *mongo.Client {
@@ -34,13 +40,15 @@ func createMongoClient(connectionString string) *mongo.Client {
 		panic(err)
 	}
 
-	// Send a ping to confirm a successful connection
-	var result bson.M
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Decode(&result); err != nil {
-		panic(err)
-	}
-	fmt.Println("[DATABASE-SERVICE] Pinged your deployment. You successfully connected to MongoDB!")
 	return client
+}
+
+func (db *DatabaseService) PingTest() bool {
+	var result bson.M
+	if err := db.client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Decode(&result); err != nil {
+		return false
+	}
+	return true
 }
 
 // TODO: Extend available methods to support all CRUD operations
