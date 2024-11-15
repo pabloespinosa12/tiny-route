@@ -56,10 +56,10 @@ func (db *DatabaseService) GetCollection(collectionName string) *mongo.Collectio
 	return db.client.Database(db.database).Collection(collectionName)
 }
 
-func (db *DatabaseService) InsertTest() {
+func (db *DatabaseService) InsertOne(collection string, document interface{}) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	db.client.Database(db.database).Collection("users").InsertOne(ctx, bson.D{{"hola", 1}})
+	return db.client.Database(db.database).Collection(collection).InsertOne(ctx, document)
 }
 
 func (db *DatabaseService) CloseConnection() {
