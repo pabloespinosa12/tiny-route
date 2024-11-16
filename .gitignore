@@ -27,3 +27,4 @@ go.work.sum
 # Build directory
 cmd/tiny-route/tmp
 tmp
+main
